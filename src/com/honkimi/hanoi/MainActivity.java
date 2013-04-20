@@ -6,6 +6,9 @@ import org.taptwo.android.widget.TitleFlowIndicator;
 import org.taptwo.android.widget.ViewFlow;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -16,8 +19,13 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import br.com.dina.ui.widget.UIButton;
+import br.com.dina.ui.widget.UIButton.ClickListener;
+import br.com.dina.ui.widget.UITableView;
 
 import com.honkimi.hanoi.AnimateStack.AnimCallback;
 import com.honkimi.hanoi.AnimateStack.AnimComplete;
@@ -65,6 +73,7 @@ public class MainActivity extends Activity {
         hanoi.doHanoi(hanoi.num, hanoi.polls.get("S"), hanoi.polls.get("G"),
                 hanoi.polls.get("B"));
         setNumClickListener();
+        setSeekbarListener();
 
     }
 
@@ -80,7 +89,7 @@ public class MainActivity extends Activity {
             p2.removeAllViews();
             p3.removeAllViews();
             polls = new HashMap<String, AnimateStack>();
-            circleNum = getNumber() ;
+            circleNum = getNumber();
             polls.put("S", new AnimateStack(p1, "S", circleNum, handler));
             polls.put("B", new AnimateStack(p2, "B", 0, handler));
             polls.put("G", new AnimateStack(p3, "G", 0, handler));
@@ -95,7 +104,7 @@ public class MainActivity extends Activity {
                         MainActivity.this.getPackageName()));
                 target.setTag(circleNum - i + 1);
                 p1.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-                polls.get("S").asyncPush(target, null);
+                polls.get("S").asyncPush(target, null, getSpeed());
             }
         }
 
@@ -112,7 +121,8 @@ public class MainActivity extends Activity {
                                 move(hanoi.moveList.get(currentAnimNo)[0],
                                         hanoi.moveList.get(currentAnimNo)[1]);
                             } else {
-                                Toast.makeText(MainActivity.this, "Done!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "Done!",
+                                        Toast.LENGTH_SHORT).show();
                                 startBtn.setClickable(true);
                                 startBtn.setText("Restart Hanoi");
                                 startBtn.setOnClickListener(new OnClickListener() {
@@ -129,27 +139,44 @@ public class MainActivity extends Activity {
                                 });
                             }
                         }
-                    });
+                    }, getSpeed());
                 }
-            });
+            }, getSpeed());
         }
     }
-
 
     public void doHanoi(View v) {
         currentAnimNo = 0;
         hanoiAnim.move(hanoi.moveList.get(currentAnimNo)[0],
                 hanoi.moveList.get(currentAnimNo)[1]);
-        startBtn.setClickable(false);
         startBtn.setText("Now Hanoing..");
     }
 
     private void onSourceCreate() {
         WebView wv = (WebView) findViewById(R.id.source);
+        wv.getSettings().setJavaScriptEnabled(true);
         wv.loadUrl("file:///android_asset/html/source.html");
     }
 
     private void onInfoCreate() {
+        ((UIButton) findViewById(R.id.thanks))
+                .addClickListener(new ClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Uri uri = Uri.parse("http://fireball.jpn.com/");
+                        Intent i = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(i);
+                    }
+                });
+        ((UIButton) findViewById(R.id.author))
+                .addClickListener(new ClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Uri uri = Uri.parse("https://twitter.com/kimihom");
+                        Intent i = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(i);
+                    }
+                });
     }
 
     private int getNumber() {
@@ -157,17 +184,54 @@ public class MainActivity extends Activity {
     }
 
     private void setNumClickListener() {
-        for (int i=1; i<=5; i++) {
+        for (int i = 1; i <= 5; i++) {
             final int n = i;
-            TextView tv = (TextView) findViewById(getResources().getIdentifier("num" + i, "id", getPackageName()));
+            TextView tv = (TextView) findViewById(getResources().getIdentifier(
+                    "num" + i, "id", getPackageName()));
             tv.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getPreferences(MODE_PRIVATE).edit().putInt("num", n).commit();
-                    Toast.makeText(MainActivity.this, "Set Circle Num to" + n + "!", Toast.LENGTH_SHORT).show();
+                    getPreferences(MODE_PRIVATE).edit().putInt("num", n)
+                            .commit();
+                    Toast.makeText(MainActivity.this,
+                            "Set Circle Num to " + n + "!", Toast.LENGTH_SHORT)
+                            .show();
                     onHanoiCreate();
                 }
             });
         }
+    }
+
+    private void setSeekbarListener() {
+        SeekBar sb = (SeekBar) findViewById(R.id.seekbar);
+        sb.setProgress(getSpeed());
+        sb.setMax(5000);
+        sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Log.v("onStartTrackingTouch()",
+                        String.valueOf(seekBar.getProgress()));
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress,
+                    boolean fromTouch) {
+                Log.v("onProgressChanged()", String.valueOf(progress) + ", "
+                        + String.valueOf(fromTouch));
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                getPreferences(MODE_PRIVATE).edit()
+                        .putInt("speed", seekBar.getProgress()).commit();
+                Toast.makeText(MainActivity.this, "speed changed!",
+                        Toast.LENGTH_SHORT).show();
+                onHanoiCreate();
+            }
+        });
+    }
+
+    private int getSpeed() {
+        return getPreferences(MODE_PRIVATE).getInt("speed", 1000);
     }
 }

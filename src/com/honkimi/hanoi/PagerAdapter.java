@@ -14,7 +14,7 @@ public class PagerAdapter extends BaseAdapter implements TitleProvider {
         private static final int VIEW2 = 1;
         private static final int VIEW3 = 2;
         private static final int VIEW_MAX_COUNT = VIEW3 + 1;
-    	private final String[] names = {"Hanoi","Source", "Info"};
+    	private final String[] names = {"The Hanoi","Sample Source", "Info"};
 
     private LayoutInflater mInflater;
 

@@ -1,16 +1,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ui="http://schemas.android.com/apk/res/com.honkimi.hanoi"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <RelativeLayout
-        android:id="@+id/numLayout"
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollView"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_margin="10dip"
-        android:padding="5dip" >
+        android:layout_height="fill_parent"
+        android:background="#ffd3d3d3" >
 
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <br.com.dina.ui.widget.UIButton
+                android:id="@+id/author"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:padding="10dip"
+                ui:image="@drawable/twitter"
+                ui:title="Created by Kiminari Homma" />
+
+            <br.com.dina.ui.widget.UIButton
+                android:id="@+id/thanks"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:padding="10dip"
+                ui:image="@drawable/hack"
+                ui:subtitle="Apr 20, 2013  Hackathon"
+                ui:title="Special Thanks" />
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

@@ -36,7 +36,7 @@ public class AnimateStack {
         this.handler = handler;
     }
 
-    public void asyncPush(ImageView v, final AnimComplete callback) {
+    public void asyncPush(ImageView v, final AnimComplete callback, int speed) {
         int tag = (Integer) v.getTag();
         ImageView target = new ImageView(v.getContext());
         target.setBackgroundResource(v
@@ -48,6 +48,7 @@ public class AnimateStack {
         stack.push(target);
         Animation anim = AnimationUtils.loadAnimation(target.getContext(),
                 R.anim.animator_down);
+        anim.setDuration(speed);
         target.startAnimation(anim);
         poll.setGravity(Gravity.CENTER | Gravity.BOTTOM);
         poll.addView(target, 0, new LinearLayout.LayoutParams(
@@ -75,13 +76,14 @@ public class AnimateStack {
         });
     }
 
-    public void asyncPop(final AnimateStack to, final AnimCallback callback) {
+    public void asyncPop(final AnimateStack to, final AnimCallback callback, int speed) {
         if (stack.isEmpty()) {
             throw new RuntimeException("stack" + name + "is empty!");
         }
         final ImageView target = stack.pop();
         Animation anim = AnimationUtils.loadAnimation(target.getContext(),
                 R.anim.animator);
+        anim.setDuration(speed);
         target.startAnimation(anim);
         anim.setAnimationListener(new AnimationListener() {
             @Override

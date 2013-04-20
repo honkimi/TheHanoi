@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, ViewFlowExample!</string>
-    <string name="app_name">Viewflow examples</string>
+    <string name="app_name">THE HANOI</string>
     <string name="diff_title">The HANOI</string>
     <string name="source">
 
