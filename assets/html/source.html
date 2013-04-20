@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Hello SyntaxHighlighter</title>
+<script type="text/javascript" src="scripts/shCore.js"></script>
+<script type="text/javascript" src="scripts/shBrushJava.js"></script>
+<link type="text/css" rel="stylesheet" href="styles/shCoreDefault.css" />
+<script type="text/javascript">
+	SyntaxHighlighter.all();
+</script>
+</head>
+
+<body style="background: white; font-family: Helvetica">
+
+	<pre class="brush: java;">
+
+package com.honkimi.hanoi;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
+
+public class Hanoi {
+  public HashMap&lt;String, Poll&gt; polls;
+  final static int N = 5;
+
+  public  List&lt;String[]&gt; moveList;
+
+  public Hanoi() {
+    moveList = new ArrayList&lt;String[]&gt;();
+    polls = new HashMap&lt;String, Poll&gt;();
+    polls.put("S", new Poll("S"));
+    polls.put("G", new Poll("G"));
+    polls.put("B", new Poll("B"));
+
+    for (int i = 0; i &lt; N; i++) {
+      polls.get("S").push(N - i);
+    }
+  }
+
+  private void move(Poll from, Poll to) {
+    to.push(from.pop());
+  }
+
+  public void doHanoi(int n, Poll start,
+      Poll goal, Poll buffer) {
+    if (n &gt; 0) {
+      doHanoi(n-1, start, buffer, goal);
+      move(start, goal);
+         start.name, goal.name});
+      doHanoi(n-1, buffer, goal, start);
+    }
+  }
+
+  class Poll {
+    private Stack&lt;Integer&gt; stack;
+    public String name;
+
+    public Poll(String name) {
+      stack = new Stack&lt;Integer&gt;();
+      this.name = name;
+    }
+
+    public void push(int v) {
+      if (!stack.isEmpty() &amp;&amp;
+        stack.peek() &lt; v) {
+        throw new RuntimeException();
+      }
+      stack.push(v);
+    }
+
+    public int pop() {
+      return stack.pop();
+    }
+  }
+}
+</pre>
+</html>
